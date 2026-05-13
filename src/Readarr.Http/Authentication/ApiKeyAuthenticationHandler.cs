@@ -28,22 +28,19 @@ namespace Readarr.Http.Authentication
         public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
             IConfigFileProvider config)
-            : base(options, logger, encoder, clock)
+            : base(options, logger, encoder)
         {
             _apiKey = config.ApiKey;
         }
 
         private string ParseApiKey()
         {
-            // Try query parameter
             if (Request.Query.TryGetValue(Options.QueryName, out var value))
             {
                 return value.FirstOrDefault();
             }
 
-            // No ApiKey query parameter found try headers
             if (Request.Headers.TryGetValue(Options.HeaderName, out var headerValue))
             {
                 return headerValue.FirstOrDefault();
