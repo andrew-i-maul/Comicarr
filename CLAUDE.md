@@ -14,7 +14,7 @@ A ground-up rewrite of Mylar3 built on the Readarr codebase, targeting full comp
 
 **Origin:** Forked from Readarr. Book/audiobook-specific logic is being stripped and replaced with comic-specific equivalents.
 
-**Status:** Clean .NET 8 baseline build established. Audit and strip-down is next.
+**Status:** Clean .NET 8 baseline build established and committed to GitHub. Codebase audit and strip-down is next. Development has moved fully into code-server.
 
 ---
 
@@ -24,20 +24,28 @@ A ground-up rewrite of Mylar3 built on the Readarr codebase, targeting full comp
 - **Repo location:** `/home/comicarr/Comicarr`
 - **Runtime:** .NET 8 (upgraded from Readarr's .NET 6)
 - **Frontend tooling:** Node.js LTS + Yarn
+- **Editor:** code-server (VS Code in browser)
+
+### code-server Extensions (install if missing)
+- C# Dev Kit (Microsoft) — IntelliSense, debugging, go-to-definition
+- ESLint — frontend linting
+- Prettier — code formatting
+- GitLens — navigating inherited codebase
+- Claude — Anthropic extension for Claude Code codebase awareness
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | C# / ASP.NET Core (.NET 8) |
-| Frontend | React (inherited from Readarr/Sonarr) |
-| Database | SQLite via Dapper |
-| Metadata | ComicVine API |
-| Indexers | Prowlarr + native Newznab/Torznab |
-| Download clients | qBittorrent, SABnzbd, NZBGet, Deluge etc. (inherited) |
-| Deployment | Docker (Linux — Proxmox LXC target) |
+| Layer | Technology | Notes |
+|---|---|---|
+| Backend | C# / ASP.NET Core (.NET 8) | |
+| Frontend | React (inherited from Readarr/Sonarr) | |
+| Database | SQLite via Dapper | |
+| Metadata | ComicVine API, ComicTagger | Comics metadata quality is poor vs TV/movies — consider Metron as an alternative; confirm any additional metadata sources with Andrew before implementing |
+| Indexers | Prowlarr + native Newznab/Torznab | |
+| Download clients | qBittorrent, SABnzbd, NZBGet, Deluge etc. (inherited) | |
+| Deployment | Docker (Linux — Proxmox LXC target) | |
 
 ---
 
@@ -52,7 +60,7 @@ Comics metadata is messier than TV or books. Key concepts:
 - **Special / Annual / One-Shot** — non-standard issues, need explicit handling
 - **Story Arc** — cross-series arcs (nice to have, not MVP)
 
-ComicVine is the primary metadata source. Their IDs are the canonical identifiers throughout the system.
+ComicVine is the primary metadata source. Their IDs are the canonical identifiers throughout the system. If other metadata sources are identified, confirm with Andrew before taking on the additional scope.
 
 ---
 
@@ -74,7 +82,7 @@ ComicVine is the primary metadata source. Their IDs are the canonical identifier
 - TagLibSharp-Lidarr (audio tagging — not needed)
 - SixLabors.ImageSharp (book cover handling — replace with comic cover equivalent)
 - PdfSharpCore (not needed)
-- AZW/Kindle tag handling (src/NzbDrone.Core/MediaFiles/AzwTag/)
+- AZW/Kindle tag handling (`src/NzbDrone.Core/MediaFiles/AzwTag/`)
 
 ### What We're Building New
 - ComicVine API client (`src/NzbDrone.Core/MetadataSource/ComicVine/`)
@@ -134,9 +142,12 @@ Rename tokens to implement:
 - [x] Updated vulnerable NuGet packages (MailKit, SixLabors.ImageSharp)
 - [x] Updated all Microsoft.Extensions packages to 8.x
 - [x] Clean build — 0 errors, 0 warnings
+- [x] Committed to GitHub
+- [x] Moved development into code-server
 
 ## Current Focus
 
+- [ ] Install and configure code-server extensions (C# Dev Kit, ESLint, Prettier, GitLens, Claude)
 - [ ] Codebase audit — catalogue what to remove
 - [ ] Strip out Goodreads/BookInfo integration
 - [ ] Strip out book/author domain model
@@ -185,6 +196,7 @@ Rename tokens to implement:
 - [ ] Volume selection UX — auto-select latest or expose choice in add-series flow?
 - [ ] Story arc support — defer to post-MVP
 - [ ] Mylar3 library import/migration tool — high value for adoption, scope TBD
+- [ ] Additional metadata sources (e.g. Metron) — evaluate but confirm with Andrew before implementing
 
 ---
 
@@ -196,3 +208,4 @@ Rename tokens to implement:
 - Andrew has deep enterprise architecture and business process background (SAP, Oracle, supply chain) but is returning to hands-on development after ~25 years — prefer clear explanations over assumed modern framework knowledge
 - StyleCop is enforced — all generated code must follow formatting rules (no double blank lines, trailing newlines, no blank line after opening brace)
 - Dev environment is Debian LXC, all commands should be bash not PowerShell
+- Confirm with Andrew before expanding scope — metadata sources, new dependencies, architectural changes
